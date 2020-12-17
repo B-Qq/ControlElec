@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.controlelec.mapper.DeviceMapper">
+
+    <select id="getDeviceList" parameterType="String" resultType="com.example.controlelec.bean.DeviceBean">
+        SELECT
+        stake_name stakeName,
+        stake_no stakeNo
+        FROM SZ_ASSET_DEVICE WHERE USER_UUID = #{uuid}
+    </select>
+
+    <select id="getAllDeviceList" parameterType="String" resultType="com.example.controlelec.bean.DeviceBean">
+        SELECT
+        stake_name stakeName,
+        stake_no stakeNo
+        FROM SZ_ASSET_DEVICE
+    </select>
+
+</mapper>

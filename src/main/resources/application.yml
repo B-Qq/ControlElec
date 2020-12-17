@@ -1,0 +1,21 @@
+server:
+  port: 9002 # 应用服务 WEB 访问端口
+
+spring:
+  application:
+    name: controlelec # 应用名称
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver # 数据库驱动
+    name: defaultDataSource # 数据源名称
+    url: jdbc:mysql://192.168.102.115:3306/cloud?serverTimezone=UTC # 数据库连接地址
+    username: adcloud # 数据库用户名
+    password: adcloud #数据库密码
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml #配置映射文件
+  type-aliases-package: com.example.controlelec.bean
+
+logging:
+  level:
+    com.fishpro.log: debug
+    com.example.controlelec.mapper: debug
