@@ -1,11 +1,17 @@
 package com.example.controlelec.bean;
 
 public class DeviceBean {
-    //用户uuid
+    /**
+     * 用户uuid
+     */
     private String uuid;
-    //桩号
+    /**
+     * 桩号
+     */
     private String stakeNo;
-    //桩名称
+    /**
+     * 桩名称
+     */
     private String stakeName;
 
     public String getUuid() {

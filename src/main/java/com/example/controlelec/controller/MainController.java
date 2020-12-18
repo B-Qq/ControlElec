@@ -3,6 +3,7 @@ package com.example.controlelec.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.controlelec.bean.DeviceBean;
 import com.example.controlelec.bean.OrderBean;
+import com.sun.deploy.uitoolkit.impl.fx.FXApplet2Adapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,16 @@ import java.util.*;
 public class MainController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final String SUCCESS = "1";
+    private final String FAIL = "0";
+    private final String ROOT_UUID = "bcb73132-3b71-11eb-ab4e-000c29a9186e";
     @Autowired
     DeviceService deviceService;
 
     @RequestMapping(path = "/getDeviceList", method = RequestMethod.POST)
     public Map<String, List<DeviceBean>> getDeviceList(String uuid) {
         List<DeviceBean> deviceBeanList;
-        if (uuid.equals("bcb73132-3b71-11eb-ab4e-000c29a9186e")) {
+        if (ROOT_UUID.equals(uuid)) {
             deviceBeanList = deviceService.getAllDeviceList();
         } else {
             deviceBeanList = deviceService.getDeviceList(uuid);
@@ -76,12 +80,12 @@ public class MainController {
             JSONObject dataObj = result.getJSONObject("data");
             String type = dataObj.getString("type");
             String msgId = dataObj.getString("msg");
-            if (type.equals("1")) {
+            if (SUCCESS.equals(type)) {
                 String orderId = dataObj.getString("orderId");
                 mapRsp.put("status", "1");
                 mapRsp.put("orderId", orderId);
                 mapRsp.put("msg", "申请用电成功");
-            } else if (type.equals("0")) {
+            } else if (FAIL.equals(type)) {
                 mapRsp.put("status", "0");
                 mapRsp.put("msg", ControlElecReason.getStartElecReason(msgId));
             } else {
@@ -110,10 +114,10 @@ public class MainController {
             JSONObject dataObj = result.getJSONObject("data");
             String type = dataObj.getString("type");
             String msgId = dataObj.getString("msg");
-            if (type.equals("1")) {
+            if (SUCCESS.equals(type)) {
                 mapRsp.put("status", "1");
                 mapRsp.put("msg", "停止用电成功");
-            } else if (type.equals("0")) {
+            } else if (FAIL.equals(type)) {
                 mapRsp.put("status", "0");
                 mapRsp.put("msg", ControlElecReason.getStopElecReason(msgId));
             } else {

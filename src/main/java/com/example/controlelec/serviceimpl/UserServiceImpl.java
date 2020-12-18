@@ -1,4 +1,4 @@
-package com.example.controlelec.serviceImpl;
+package com.example.controlelec.serviceimpl;
 
 import com.example.controlelec.bean.UserBean;
 import com.example.controlelec.mapper.UserMapper;
