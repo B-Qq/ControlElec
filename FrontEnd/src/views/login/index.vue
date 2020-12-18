@@ -81,7 +81,8 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: url("../../assets/login.jpg");
+  background-color: rgb(29, 105, 105);
+  /* background: url("../../assets/login.jpg"); */
 }
 
 /* 标题 */

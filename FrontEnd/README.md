@@ -1,4 +1,4 @@
-# vuetest
+# elec
 
 > A Vue.js project
 
