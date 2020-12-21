@@ -78,7 +78,7 @@ export default {
 
 /* 背景 */
 .login-container {
-  position: absolute;
+  /*position: absolute;*/
   width: 100%;
   height: 100%;
   background-color: rgb(29, 105, 105);
