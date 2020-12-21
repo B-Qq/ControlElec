@@ -7,6 +7,8 @@ const path = require('path')
 module.exports = {
   dev: {
 
+    autoOpenBrowser: true,
+
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',

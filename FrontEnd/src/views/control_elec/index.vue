@@ -1,14 +1,18 @@
 <template>
   <div class="main">
+    <dir class="header">
     <el-row>
     <el-col :span="22">
-    <i class="el-icon-s-opportunity" :style="stakeStatus"></i>
+    <!-- <i class="el-icon-s-opportunity" :style="stakeStatus"></i> -->
+    <p>用户: {{user}}</p>
     </el-col>
     <el-col :span="2">
-       <el-button class="logout-button" @click="logout()" type="primary" round>退出登录</el-button>
+       <el-button class="logout-button" @click="logout()" type="primary">退出登录</el-button>
     </el-col>
     </el-row>
-    <el-row class="header">
+    </dir>
+    <div class="body">
+    <el-row class="order">
     <el-col :span="24">
     <p>订单号: {{orderIdp}}</p>
     </el-col>
@@ -41,6 +45,7 @@
         <el-button class="stop-button" type="danger" :loading="loadingStopBtn" @click="stopElecForm()">停止用电</el-button>
       </el-form-item>
     </el-form>
+</div>
   </div>
 </template>
 
@@ -64,6 +69,7 @@ export default {
   },
   data() {
     return {
+      user: sessionStorage.getItem('user'),
       //   桩号选择
       stakeNoOptions: [],
       //   端口号选择
@@ -171,11 +177,9 @@ export default {
 
 .header {
   width: auto;
-  margin: 20px 30px;
-  padding: 0px 20px;
+  padding: 10px 25px;
   font: 13px Small;
-  background-color: rgb(255, 255, 255, 0.8); /* 透明背景色 */
-  border-radius: 0px; /* 圆角 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
 }
 
 .start-elec-form {
@@ -184,7 +188,7 @@ export default {
   padding: 20px;
   background-color: rgb(255, 255, 255, 0.8); /* 透明背景色 */
   border-radius: 0px; /* 圆角 */
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+  /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) */
 }
 
 .main {
@@ -193,15 +197,8 @@ export default {
   padding: 20px;
   background-color: rgb(255, 255, 255, 0.8); /* 透明背景色 */
   border-radius: 0px; /* 圆角 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
-}
-
-/* 背景 */
-.main-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: url("../../assets/login.jpg");
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); */
+  margin-top: 5px;
 }
 
 /* 标题 */
@@ -213,5 +210,15 @@ export default {
 
 .start-button {
   color:aqua,
+}
+
+.body {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+}
+
+.order {
+  margin: 20px 30px;
+  padding: 5px 5px;
+  font: 13px Small;
 }
 </style>-->

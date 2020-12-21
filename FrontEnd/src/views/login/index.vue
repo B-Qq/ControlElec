@@ -29,7 +29,7 @@ export default {
       rules: {
         userName: [
           { required: true, message: '用户名不能为空', trigger: 'blur' },
-          { min: 3, max: 10, message: '用户名3-10位', trigger: 'blur' }
+          { min: 2, max: 10, message: '用户名2-10位', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' },
@@ -48,7 +48,9 @@ export default {
               this.$message.error('用户名或密码错误请重新输入')
             } else {
               // 判断是否登录
-              sessionStorage.username = this.userName
+              console.log('-username', this.form.userName)
+              sessionStorage.username = this.form.userName
+              sessionStorage.setItem('user', this.form.userName)
               sessionStorage.setItem('uuid', res.data['uuid'])
               this.$router.push('/main')
             }
@@ -78,10 +80,10 @@ export default {
 
 /* 背景 */
 .login-container {
-  /*position: absolute;*/
+  position: absolute;
   width: 100%;
   height: 100%;
-  background-color: rgb(29, 105, 105);
+  background-color: rgb(70, 132, 248);
   /* background: url("../../assets/login.jpg"); */
 }
 
