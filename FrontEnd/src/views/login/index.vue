@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form ref="form" :rules="rules" :model="form" label-width="80px" class="login-form">
-      <h2 class="login-title">散桩产家联调测试</h2>
+      <h2 class="login-title">散桩厂家联调测试</h2>
       <el-form-item label="用户名" prop="userName">
         <el-input v-model="form.userName" type='text' placeholder='请输入账号'></el-input>
       </el-form-item>

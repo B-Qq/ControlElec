@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 导出函数
+// 下供电指令
 export function startElec(stakeNo, port) {
   return request({
     url: '/startElec',
@@ -12,7 +12,7 @@ export function startElec(stakeNo, port) {
   })
 }
 
-// 导出函数
+// 下断电指令
 export function stopElec(orderId) {
   return request({
     url: '/stopElec',
@@ -23,7 +23,7 @@ export function stopElec(orderId) {
   })
 }
 
-// 导出函数
+// 获取设备列表
 export function getDeviceList(uuid) {
   return request({
     url: '/getDeviceList',
@@ -34,10 +34,58 @@ export function getDeviceList(uuid) {
   })
 }
 
-// 导出函数
+// 获取订单号
 export function getOrderId(stakeNo, port) {
   return request({
     url: '/getOrderId',
+    method: 'post',
+    data: {
+      stakeNo,
+      port
+    }
+  })
+}
+
+// 获取设备工作状态
+export function getWorkState(stakeNo, port) {
+  return request({
+    url: '/getWorkState',
+    method: 'post',
+    data: {
+      stakeNo,
+      port
+    }
+  })
+}
+
+// 获取设备遥信
+export function getDeviceSignal(stakeNo, port) {
+  return request({
+    url: '/getSignal',
+    method: 'post',
+    data: {
+      stakeNo,
+      port
+    }
+  })
+}
+
+// 获取设备遥测
+export function getDeviceMeter(stakeNo, port) {
+  return request({
+    url: '/getMeter',
+    method: 'post',
+    data: {
+      stakeNo,
+      port
+    }
+  })
+}
+
+// 获取设备电量
+export function getDeviceElec(stakeNo, port) {
+  return request({
+    url: '/getElec',
     method: 'post',
     data: {
       stakeNo,
