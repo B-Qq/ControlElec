@@ -63,6 +63,7 @@ public class DeviceSignalBean {
     private String SWITCHSTATE;
     @JSONField(name = "WORK_STATE")
     private String WORKSTATE;
+    private String Status;
 
     public String getLPWARN() {
         return LPWARN;
@@ -214,5 +215,13 @@ public class DeviceSignalBean {
 
     public void setWORKSTATE(String WORKSTATE) {
         this.WORKSTATE = WORKSTATE;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
     }
 }

@@ -45,6 +45,7 @@ public class DeviceMeterBean {
     private String IC;
     @JSONField(name = "QP")
     private String QP;
+    private String Status;
 
     public String getPP() {
         return PP;
@@ -148,6 +149,14 @@ public class DeviceMeterBean {
 
     public void setQP(String QP) {
         this.QP = QP;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
     }
 }
 

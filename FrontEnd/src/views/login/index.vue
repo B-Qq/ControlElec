@@ -48,7 +48,7 @@ export default {
               this.$message.error('用户名或密码错误请重新输入')
             } else {
               // 判断是否登录
-              console.log('-username', this.form.userName)
+              console.log('username:', this.form.userName)
               sessionStorage.username = this.form.userName
               sessionStorage.setItem('user', this.form.userName)
               sessionStorage.setItem('uuid', res.data['uuid'])

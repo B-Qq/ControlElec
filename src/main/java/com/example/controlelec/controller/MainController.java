@@ -130,4 +130,27 @@ public class MainController {
         }
         return mapRsp;
     }
+
+    @RequestMapping(path = "/queryCertifyStatus", method = RequestMethod.POST)
+    public Map<String, String> queryCertifyStatus(String stakeNo, String port) {
+        Map<String, String> mapRsp = new HashMap<>(1);
+        RestTemplate restTemplate = new RestTemplate();
+        MultiValueMap<String, String> mapForm = new LinkedMultiValueMap<>();
+        mapForm.add("stakeNo", stakeNo);
+        mapForm.add("chargePort", port);
+        logger.info("获取设备:" + stakeNo + ":" + port + " 认证状态");
+        JSONObject result = restTemplate.postForObject("http://192.168.102.119:8080/debugStake/queryCertifyStatus", mapForm, JSONObject.class);
+        if (result != null) {
+            logger.info("设备" + stakeNo  + ":" + port + " 认证结果:" + result.toJSONString());
+            JSONObject dataObj = result.getJSONObject("data");
+            String returnStatus = dataObj.getString("returnStatus");
+            String returnName = dataObj.getString("returnName");
+            mapRsp.put("status", returnStatus);
+            mapRsp.put("name", returnName);
+        } else {
+            mapRsp.put("status", "0");
+            mapRsp.put("name", "获取认证结果失败");
+        }
+        return mapRsp;
+    }
 }

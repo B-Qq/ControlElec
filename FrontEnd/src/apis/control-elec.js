@@ -93,3 +93,15 @@ export function getDeviceElec(stakeNo, port) {
     }
   })
 }
+
+// 获取设备认证状态
+export function queryCertifyStatus(stakeNo, port) {
+  return request({
+    url: '/queryCertifyStatus',
+    method: 'post',
+    data: {
+      stakeNo,
+      port
+    }
+  })
+}

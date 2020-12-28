@@ -24,6 +24,7 @@ public class DeviceElecBean {
     private String TOTALELEC;
     @JSONField(name = "FLAT_ELEC")
     private String FLATELEC;
+    private String Status;
 
     public String getSPORTELEC() {
         return SPORTELEC;
@@ -71,5 +72,13 @@ public class DeviceElecBean {
 
     public void setFLATELEC(String FLATELEC) {
         this.FLATELEC = FLATELEC;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
     }
 }

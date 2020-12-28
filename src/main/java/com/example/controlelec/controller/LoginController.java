@@ -32,11 +32,11 @@ public class LoginController {
         try {
             UserBean userBean = userService.loginIn(userName, password);
             if (userBean != null) {
-                logger.info("用户名:" + userName + " 密码:" + password + " uuid:" + userBean.getUuid());
+                logger.info("用户登录, 用户名:" + userName + " 密码:" + password + " uuid:" + userBean.getUuid());
                 mapRsp.put("status", "1");
                 mapRsp.put("uuid", userBean.getUuid());
             } else {
-                logger.warn("用户名或密码不正确");
+                logger.warn("用户登录, 用户名或密码不正确");
                 mapRsp.put("status", "0");
             }
             return mapRsp;

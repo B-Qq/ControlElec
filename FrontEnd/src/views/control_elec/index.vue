@@ -46,8 +46,14 @@
         <el-button type="info" :loading="getSignalBtn" @click="getSignal" style="text-align: center;" plain>获取设备遥信</el-button>
         <el-button type="info" :loading="getMeterBtn" @click="getMeter" style="text-align: center;" plain>获取设备遥测</el-button>
         <el-button type="info" :loading="getElecBtn" @click="getElec" style="text-align: center;" plain>获取设备计量</el-button>
+        <el-button type="info" :loading="getRenBtn" @click="getRen" style="text-align: center;" plain>获取认证结果</el-button>
       </el-form-item>
     </el-form>
+    </div>
+    <hr/>
+    <div clas="ren-div">
+      <em style="color: #31a188;font-size: 20px;">安全认证结果: </em>
+      <label style="color:red;font-size: 25px;">{{renStatus}}</label>
     </div>
     <hr/>
     <div class="singal-div">
@@ -202,7 +208,7 @@
 </template>
 
 <script>
-import { startElec, stopElec, getDeviceList, getOrderId, getWorkState, getDeviceSignal, getDeviceMeter, getDeviceElec } from '@/apis/control-elec'
+import { startElec, stopElec, getDeviceList, getOrderId, getWorkState, getDeviceSignal, getDeviceMeter, getDeviceElec, queryCertifyStatus } from '@/apis/control-elec'
 
 export default {
   created: function() {
@@ -230,12 +236,19 @@ export default {
         } else {
           this.orderColor = 'color:green;'
         }
-        console.log(res.data['workState'])
+        console.log('workState:', res.data['workState'])
       })
+      this.getSignal()
+      this.getElec()
+      this.getMeter()
+      this.getRen()
     })
+    this.initWebSocket()
   },
   data() {
     return {
+      wsPath: 'ws://127.0.0.1:9002/websocket/' + sessionStorage.getItem('user'),
+      ws: {},
       user: sessionStorage.getItem('user'),
       //   桩号选择
       stakeNoOptions: [],
@@ -247,6 +260,8 @@ export default {
         port: '2',
         label: '端口2'
       }],
+      getRenBtn: false,
+      renStatus: '',
       elec_time: '',
       total_elec: '',
       sport_elec: '',
@@ -367,6 +382,7 @@ export default {
     },
     logout() {
       this.$router.push('/login')
+      this.ws.close()
       sessionStorage.clear()
     },
     getDeviceMsg() {
@@ -386,40 +402,50 @@ export default {
         console.log(res.data['workState'])
       })
       console.log(this.form.stakeNo, this.form.port)
+      this.getSignal()
+      this.getMeter()
+      this.getElec()
+      this.getRen()
     },
     getSignal() {
       this.getSignalBtn = true
       getDeviceSignal(this.form.stakeNo, this.form.port).then((res) => {
         this.getSignalBtn = false
-        let date = res.data['time'].substring(0, 4) + '-' + res.data['time'].substring(4, 6) + '-' + res.data['time'].substring(6, 8)
-        let time = res.data['time'].substring(8, 10) + ':' + res.data['time'].substring(10, 12) + ':' + res.data['time'].substring(12, 14)
-        this.time = date + ' ' + time
-        if (res.data['workstate'] === '2') {
-          this.work_state = res.data['workstate'] + ' (空闲)'
-        } else if (res.data['workstate'] === '3') {
-          this.work_state = res.data['workstate'] + ' (工作中)'
-        } else if (res.data['workstate'] === '5') {
-          this.work_state = res.data['workstate'] + ' (完成)'
-        } else if (res.data['workstate'] === '1') {
-          this.work_state = res.data['workstate'] + ' (故障)'
-        }
+        if (res.data['status'] === '0') {
+          this.clearSignal()
+          this.$message.error('未获取到遥信数据')
+        } else {
+          let date = res.data['time'].substring(0, 4) + '-' + res.data['time'].substring(4, 6) + '-' + res.data['time'].substring(6, 8)
+          let time = res.data['time'].substring(8, 10) + ':' + res.data['time'].substring(10, 12) + ':' + res.data['time'].substring(12, 14)
+          this.time = date + ' ' + time
+          if (res.data['workstate'] === '2') {
+            this.work_state = res.data['workstate'] + ' (空闲)'
+          } else if (res.data['workstate'] === '3') {
+            this.work_state = res.data['workstate'] + ' (工作中)'
+          } else if (res.data['workstate'] === '5') {
+            this.work_state = res.data['workstate'] + ' (完成)'
+          } else if (res.data['workstate'] === '1') {
+            this.work_state = res.data['workstate'] + ' (故障)'
+          }
 
-        this.switch_state = res.data['switchstate']
-        this.relay_state = res.data['relaystate']
-        this.ov_warn = res.data['ovwarn']
-        this.uv_warn = res.data['uvwarn']
-        this.lp_warn = res.data['lpwarn']
-        this.spd_error = res.data['spderror']
-        this.scram_error = res.data['scramerror']
-        this.leakage_elec = res.data['leakageelec']
-        this.meter_error = res.data['metererror']
-        this.access_error = res.data['accesserror']
-        this.oc_error = res.data['ocerror']
-        this.water_error = res.data['watererror']
-        this.dump_error = res.data['dumperror']
-        console.log(res.data)
+          this.switch_state = res.data['switchstate']
+          this.relay_state = res.data['relaystate']
+          this.ov_warn = res.data['ovwarn']
+          this.uv_warn = res.data['uvwarn']
+          this.lp_warn = res.data['lpwarn']
+          this.spd_error = res.data['spderror']
+          this.scram_error = res.data['scramerror']
+          this.leakage_elec = res.data['leakageelec']
+          this.meter_error = res.data['metererror']
+          this.access_error = res.data['accesserror']
+          this.oc_error = res.data['ocerror']
+          this.water_error = res.data['watererror']
+          this.dump_error = res.data['dumperror']
+          console.log(res.data)
+        }
       })
         .catch(() => {
+          this.clearSignal()
           this.getSignalBtn = false
         })
     },
@@ -427,19 +453,25 @@ export default {
       this.getMeterBtn = true
       getDeviceMeter(this.form.stakeNo, this.form.port).then((res) => {
         this.getMeterBtn = false
-        let date = res.data['time'].substring(0, 4) + '-' + res.data['time'].substring(4, 6) + '-' + res.data['time'].substring(6, 8)
-        let time = res.data['time'].substring(8, 10) + ':' + res.data['time'].substring(10, 12) + ':' + res.data['time'].substring(12, 14)
-        this.meter_time = date + ' ' + time
-        this.ua = res.data['ua']
-        this.ub = res.data['ub']
-        this.uc = res.data['uc']
-        this.ia = res.data['ia']
-        this.ib = res.data['ib']
-        this.ic = res.data['ic']
-        this.pp = res.data['pp']
-        console.log(res.data)
+        if (res.data['status'] === '0') {
+          this.clearMeter()
+          this.$message.error('未获取到遥测数据')
+        } else {
+          let date = res.data['time'].substring(0, 4) + '-' + res.data['time'].substring(4, 6) + '-' + res.data['time'].substring(6, 8)
+          let time = res.data['time'].substring(8, 10) + ':' + res.data['time'].substring(10, 12) + ':' + res.data['time'].substring(12, 14)
+          this.meter_time = date + ' ' + time
+          this.ua = res.data['ua']
+          this.ub = res.data['ub']
+          this.uc = res.data['uc']
+          this.ia = res.data['ia']
+          this.ib = res.data['ib']
+          this.ic = res.data['ic']
+          this.pp = res.data['pp']
+          console.log(res.data)
+        }
       })
         .catch(() => {
+          this.clearMeter()
           this.getMeterBtn = false
         })
     },
@@ -447,19 +479,105 @@ export default {
       this.getElecBtn = true
       getDeviceElec(this.form.stakeNo, this.form.port).then((res) => {
         this.getElecBtn = false
-        let date = res.data['time'].substring(0, 4) + '-' + res.data['time'].substring(4, 6) + '-' + res.data['time'].substring(6, 8)
-        let time = res.data['time'].substring(8, 10) + ':' + res.data['time'].substring(10, 12) + ':' + res.data['time'].substring(12, 14)
-        this.elec_time = date + ' ' + time
-        this.total_elec = res.data['totalelec']
-        this.sport_elec = res.data['sportelec']
-        this.peak_elec = res.data['peakelec']
-        this.flat_elec = res.data['flatelec']
-        this.valley_elec = res.data['valleyelec']
-        console.log(res.data)
+        if (res.data['status'] === '0') {
+          this.clearELec()
+          this.$message.error('未获取到计量数据')
+        } else {
+          let date = res.data['time'].substring(0, 4) + '-' + res.data['time'].substring(4, 6) + '-' + res.data['time'].substring(6, 8)
+          let time = res.data['time'].substring(8, 10) + ':' + res.data['time'].substring(10, 12) + ':' + res.data['time'].substring(12, 14)
+          this.elec_time = date + ' ' + time
+          this.total_elec = res.data['totalelec']
+          this.sport_elec = res.data['sportelec']
+          this.peak_elec = res.data['peakelec']
+          this.flat_elec = res.data['flatelec']
+          this.valley_elec = res.data['valleyelec']
+          console.log(res.data)
+        }
       })
         .catch(() => {
+          this.clearELec()
           this.getElecBtn = false
         })
+    },
+    initWebSocket() {
+      if (typeof (WebSocket) === 'undefined') {
+        this.$alert('不支持websocket', '不支持websocket', {
+          confirmButtonText: '确定'
+        })
+      }
+      // 实例化socket，这里的实例化直接赋值给this.ws是为了后面可以在其它的函数中也能调用websocket方法，例如：this.ws.close(); 完成通信后关闭WebSocket连接
+      this.ws = new WebSocket(this.wsPath)
+
+      // 监听是否连接成功
+      this.ws.onopen = () => {
+        console.log('ws连接状态：' + this.ws.readyState)
+        // 连接成功则发送一个数据
+        // this.ws.send(sessionStorage.getItem('user'))
+      }
+
+      // 接听服务器发回的信息并处理展示
+      this.ws.onmessage = (data) => {
+        console.log('接收到来自服务器的消息：', data)
+      }
+
+      // 监听连接关闭事件
+      this.ws.onclose = () => {
+        // 监听整个过程中websocket的状态
+        console.log('ws连接状态：' + this.ws.readyState)
+      }
+
+      // 监听并处理error事件
+      this.ws.onerror = function(error) {
+        console.log('websocket 连接错误:', error)
+      }
+    },
+    getRen() {
+      this.getRenBtn = true
+      this.renStatus = ''
+      queryCertifyStatus(this.form.stakeNo, this.form.port).then((res) => {
+        this.getRenBtn = false
+        this.renStatus = res.data['name']
+        console.log('认证结果:', res)
+      })
+        .catch(() => {
+          this.renStatus = ''
+          this.getRenBtn = false
+        })
+    },
+    clearMeter() {
+      this.ua = ''
+      this.ub = ''
+      this.uc = ''
+      this.ia = ''
+      this.ib = ''
+      this.ic = ''
+      this.pp = ''
+      this.meter_time = ''
+    },
+    clearSignal() {
+      this.time = ''
+      this.work_state = ''
+      this.switch_state = ''
+      this.relay_state = ''
+      this.ov_warn = ''
+      this.uv_warn = ''
+      this.lp_warn = ''
+      this.spd_error = ''
+      this.scram_error = ''
+      this.leakage_elec = ''
+      this.meter_error = ''
+      this.access_error = ''
+      this.oc_error = ''
+      this.water_error = ''
+      this.dump_error = ''
+    },
+    clearELec() {
+      this.elec_time = ''
+      this.total_elec = ''
+      this.sport_elec = ''
+      this.peak_elec = ''
+      this.flat_elec = ''
+      this.valley_elec = ''
     }
   }
 }
