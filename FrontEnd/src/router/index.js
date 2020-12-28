@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/login'
 import Main from '@/views/control_elec'
+import Offline from '@/views/offline_record'
 import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 
@@ -24,6 +25,11 @@ const route = new Router({
       path: '/main',
       name: 'main',
       component: Main
+    },
+    {
+      path: '/offline',
+      name: 'offline',
+      component: Offline
     }
   ],
   mode: 'history'

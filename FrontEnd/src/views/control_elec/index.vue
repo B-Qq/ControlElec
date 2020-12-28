@@ -1,11 +1,14 @@
 <template>
   <div class="main">
     <el-row>
-    <el-col :span="22">
+    <el-col :span="20">
     <p>用户: {{user}}</p>
     </el-col>
     <el-col :span="2">
-       <el-button class="logout-button" @click="logout()" type="primary">退出登录</el-button>
+       <el-button @click="offlineRecord()" type="success" round>设备离线记录</el-button>
+    </el-col>
+    <el-col :span="2">
+      <el-button class="logout-button" @click="logout()" type="primary">退出登录</el-button>
     </el-col>
     </el-row>
     <hr/>
@@ -384,6 +387,9 @@ export default {
       this.$router.push('/login')
       this.ws.close()
       sessionStorage.clear()
+    },
+    offlineRecord() {
+      this.$router.push('/offline')
     },
     getDeviceMsg() {
       // 获取订单号
