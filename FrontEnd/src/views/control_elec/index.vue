@@ -245,8 +245,8 @@ export default {
       this.getElec()
       this.getMeter()
       this.getRen()
+      this.initWebSocket()
     })
-    this.initWebSocket()
   },
   data() {
     return {
@@ -390,6 +390,7 @@ export default {
     },
     offlineRecord() {
       this.$router.push('/offline')
+      this.ws.close()
     },
     getDeviceMsg() {
       // 获取订单号
@@ -523,7 +524,9 @@ export default {
 
       // 接听服务器发回的信息并处理展示
       this.ws.onmessage = (data) => {
-        console.log('接收到来自服务器的消息：', data)
+        this.$alert(data, data, {
+          confirmButtonText: '确定'
+        })
       }
 
       // 监听连接关闭事件
@@ -616,4 +619,4 @@ export default {
   padding: 5px 5px;
   font: 13px Small;
 }
-</style>-->
+</style>

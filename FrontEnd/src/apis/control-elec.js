@@ -105,3 +105,15 @@ export function queryCertifyStatus(stakeNo, port) {
     }
   })
 }
+
+// 获取设备在线告警
+export function getOnlineWarn(uuid, date) {
+  return request({
+    url: '/getOnlineWarn',
+    method: 'post',
+    data: {
+      uuid,
+      date
+    }
+  })
+}
