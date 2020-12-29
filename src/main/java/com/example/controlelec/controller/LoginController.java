@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 public class LoginController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Autowired
     UserService userService;
 

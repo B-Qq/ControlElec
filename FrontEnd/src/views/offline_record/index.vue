@@ -21,7 +21,7 @@
       </el-date-picker>
       <el-button type="success" :loading="SearchBtn" @click="SearchWarn" style="margin-left: 10px;">搜索</el-button>
     </div>
-    <el-table style="width: 100%;" :data="WarnList.slice((currentPage-1)*pagesize,currentPage*pagesize)" align="center">
+    <el-table style="width: 100%;margin-bottom: 15px" :data="WarnList.slice((currentPage-1)*pagesize,currentPage*pagesize)" align="center">
       <el-table-column type="index" width="50" align="center">
       </el-table-column>
       <el-table-column label="设备编号" prop="stakeName" width="180" align="center">

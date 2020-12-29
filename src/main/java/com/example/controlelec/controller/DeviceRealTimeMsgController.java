@@ -18,7 +18,7 @@ import java.util.Map;
 @RestController
 public class DeviceRealTimeMsgController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(DeviceRealTimeMsgController.class);
     @Autowired
     private RedisUtil redisUtil;
 

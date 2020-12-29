@@ -21,7 +21,7 @@ import java.util.*;
 @RestController
 public class MainController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(MainController.class);
     private final String SUCCESS = "1";
     private final String FAIL = "0";
     private final String ROOT_UUID = "bcb73132-3b71-11eb-ab4e-000c29a9186e";

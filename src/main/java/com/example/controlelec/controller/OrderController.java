@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 public class OrderController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
     OrderService orderService;
