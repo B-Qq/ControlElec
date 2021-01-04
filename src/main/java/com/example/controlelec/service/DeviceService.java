@@ -19,4 +19,10 @@ public interface DeviceService {
      * @return 设备信息
      */
     List<DeviceBean> getAllDeviceList();
+
+    /**
+     * 获取设备信息
+     */
+    DeviceBean getDeviceInfo(String stakeNo);
+
 }

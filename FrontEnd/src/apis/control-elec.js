@@ -117,3 +117,8 @@ export function getOnlineWarn(uuid, date) {
     }
   })
 }
+
+export function getWsPath() {
+  // return 'ws://127.0.0.1:9002/websocket/' + sessionStorage.getItem('uuid')
+  return 'ws://203.93.121.134:18882/websocket/' + sessionStorage.getItem('uuid')
+}

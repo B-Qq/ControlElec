@@ -16,4 +16,11 @@
         FROM SZ_ASSET_DEVICE
     </select>
 
+    <select id="getDeviceInfo" parameterType="String" resultType="com.example.controlelec.bean.DeviceBean">
+        SELECT
+        stake_name stakeName,
+        user_uuid uuid
+        FROM SZ_ASSET_DEVICE WHERE STAKE_NO = #{stakeNo}
+    </select>
+
 </mapper>

@@ -19,4 +19,9 @@ public interface DeviceMapper {
      * @return 设备信息
      */
     List<DeviceBean> getAllDeviceList();
+
+    /**
+     * 更具桩号获取设备信息
+     */
+    DeviceBean getDeviceInfo(String stakeNo);
 }

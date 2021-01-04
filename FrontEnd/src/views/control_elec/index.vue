@@ -211,7 +211,7 @@
 </template>
 
 <script>
-import { startElec, stopElec, getDeviceList, getOrderId, getWorkState, getDeviceSignal, getDeviceMeter, getDeviceElec, queryCertifyStatus } from '@/apis/control-elec'
+import { startElec, stopElec, getDeviceList, getOrderId, getWorkState, getDeviceSignal, getDeviceMeter, getDeviceElec, queryCertifyStatus, getWsPath } from '@/apis/control-elec'
 
 export default {
   created: function() {
@@ -248,9 +248,16 @@ export default {
       this.initWebSocket()
     })
   },
+  mounted() {
+    const timer = setInterval(() => {
+      this.ws.send('heart')
+    }, 5000)
+    this.$once('hook:beforeDestroy', () => {
+      clearInterval(timer)
+    })
+  },
   data() {
     return {
-      wsPath: 'ws://127.0.0.1:9002/websocket/' + sessionStorage.getItem('user'),
       ws: {},
       user: sessionStorage.getItem('user'),
       //   桩号选择
@@ -328,16 +335,26 @@ export default {
             if (res.data['status'] === '1') {
               this.orderColor = 'color:red;'
               this.orderIdp = res.data['orderId']
+              this.$alert(res.data['msg'], '用电结果', {
+                confirmButtonText: '确定',
+                type: 'success'
+              })
+            } else {
+              this.$alert(res.data['msg'], '用电结果', {
+                confirmButtonText: '确定',
+                type: 'error'
+              })
             }
             this.loadingStartBtn = false
-            this.$alert(res.data['msg'], '用电结果', {
-              confirmButtonText: '确定'
-            })
             // console.log(res.data['msg'])
           })
             .catch((err) => {
               this.loadingStartBtn = false
               console.error('faild', err)
+              this.$alert(err, '用电结果', {
+                confirmButtonText: '确定',
+                type: 'error'
+              })
             })
         } else {
           this.loadingStartBtn = false
@@ -353,7 +370,8 @@ export default {
         if (res.data['orderId'] === '') {
           this.loadingStopBtn = false
           this.$alert('未找到供电中的订单', '停止用电结果', {
-            confirmButtonText: '确定'
+            confirmButtonText: '确定',
+            type: 'error'
           })
           return
         }
@@ -363,11 +381,13 @@ export default {
           if (res.data['status'] === '1') {
             this.orderColor = 'color:green;'
             this.$alert('停止用电成功', '停止用电结果', {
-              confirmButtonText: '确定'
+              confirmButtonText: '确定',
+              type: 'success'
             })
           } else {
             this.$alert(res.data['msg'], '停止用电结果', {
-              confirmButtonText: '确定'
+              confirmButtonText: '确定',
+              type: 'error'
             })
           }
         })
@@ -379,14 +399,15 @@ export default {
         .catch((eerr) => {
           this.loadingStopBtn = false
           this.$alert('超时', '停止用电结果', {
-            confirmButtonText: '确定'
+            confirmButtonText: '确定',
+            type: 'error'
           })
         })
     },
     logout() {
       this.$router.push('/login')
-      this.ws.close()
       sessionStorage.clear()
+      this.ws.close()
     },
     offlineRecord() {
       this.$router.push('/offline')
@@ -509,23 +530,24 @@ export default {
     initWebSocket() {
       if (typeof (WebSocket) === 'undefined') {
         this.$alert('不支持websocket', '不支持websocket', {
-          confirmButtonText: '确定'
+          confirmButtonText: '确定',
+          type: 'error'
         })
       }
       // 实例化socket，这里的实例化直接赋值给this.ws是为了后面可以在其它的函数中也能调用websocket方法，例如：this.ws.close(); 完成通信后关闭WebSocket连接
-      this.ws = new WebSocket(this.wsPath)
+      this.ws = new WebSocket(getWsPath())
 
       // 监听是否连接成功
       this.ws.onopen = () => {
         console.log('ws连接状态：' + this.ws.readyState)
-        // 连接成功则发送一个数据
-        // this.ws.send(sessionStorage.getItem('user'))
       }
 
       // 接听服务器发回的信息并处理展示
       this.ws.onmessage = (data) => {
-        this.$alert(data, data, {
-          confirmButtonText: '确定'
+        console.log('socket recvie:', data['data'])
+        this.$alert(data['data'], '异常原因停电', {
+          confirmButtonText: '确定',
+          type: 'warning'
         })
       }
 

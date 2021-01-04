@@ -49,11 +49,20 @@
 </template>
 
 <script>
-import { getOnlineWarn } from '@/apis/control-elec'
+import { getOnlineWarn, getWsPath } from '@/apis/control-elec'
 export default {
   created() {
     this.selectDate = this.getDate()
     this.handleUserList()
+    this.initWebSocket()
+  },
+  mounted() {
+    const timer = setInterval(() => {
+      this.ws.send('heart')
+    }, 5000)
+    this.$once('hook:beforeDestroy', () => {
+      clearInterval(timer)
+    })
   },
   data() {
     return {
@@ -61,13 +70,14 @@ export default {
       currentPage: 1, // 初始页
       pagesize: 10, // 每页的数据
       WarnList: [],
-      selectDate: ''
+      selectDate: '',
+      ws: {}
     }
   },
   methods: {
     backMain() {
-      console.log('uuid', sessionStorage.getItem('uuid'))
       this.$router.push('/main')
+      this.ws.close()
     },
     handleSizeChange(size) {
       this.pagesize = size
@@ -108,6 +118,43 @@ export default {
     SearchWarn() {
       console.log('date:', this.selectDate)
       this.handleUserList()
+    },
+    initWebSocket() {
+      if (typeof (WebSocket) === 'undefined') {
+        this.$alert('不支持websocket', '不支持websocket', {
+          confirmButtonText: '确定',
+          type: 'error'
+        })
+      }
+      // 实例化socket，这里的实例化直接赋值给this.ws是为了后面可以在其它的函数中也能调用websocket方法，例如：this.ws.close(); 完成通信后关闭WebSocket连接
+      this.ws = new WebSocket(getWsPath())
+
+      // 监听是否连接成功
+      this.ws.onopen = () => {
+        console.log('ws连接状态：' + this.ws.readyState)
+        // 连接成功则发送一个数据
+        // this.ws.send(sessionStorage.getItem('user'))
+      }
+
+      // 接听服务器发回的信息并处理展示
+      this.ws.onmessage = (data) => {
+        console.log('socket recvie:', data['data'])
+        this.$alert(data['data'], '异常原因停电', {
+          confirmButtonText: '确定',
+          type: 'warning'
+        })
+      }
+
+      // 监听连接关闭事件
+      this.ws.onclose = () => {
+        // 监听整个过程中websocket的状态
+        console.log('ws连接状态：' + this.ws.readyState)
+      }
+
+      // 监听并处理error事件
+      this.ws.onerror = function(error) {
+        console.log('websocket 连接错误:', error)
+      }
     }
   }
 }

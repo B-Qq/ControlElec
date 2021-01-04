@@ -8,13 +8,14 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 @ServerEndpoint("/websocket/{sid}")
 public class WebSocketServer {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final static Logger log = LoggerFactory.getLogger(WebSocketServer.class);
 
     /**
      * 静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
@@ -29,7 +30,7 @@ public class WebSocketServer {
     /**
      * 发送消息
      */
-    public void sendMessage(Session session, String message) throws IOException {
+    public static void sendMessage(Session session, String message) throws IOException {
         if (session != null) {
             synchronized (session) {
                 log.info("发送数据:" + message);
@@ -41,13 +42,19 @@ public class WebSocketServer {
     /**
      * 给指定用户发送信息
      */
-    public void sendInfo(String userName, String message) {
+    public static void sendInfo(String userName, String message) {
         Session session = sessionPools.get(userName);
         try {
             sendMessage(session, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void sendInfoToRoot(String message) {
+        //root用户uuid
+        String userName = "bcb73132-3b71-11eb-ab4e-000c29a9186e";
+        sendInfo(userName, message);
     }
 
     /**
@@ -82,14 +89,14 @@ public class WebSocketServer {
     public void onMessage(String message) throws IOException {
         message = "收到客户端消息：" + message;
         log.info(message);
-        for (Session session : sessionPools.values()) {
-            try {
-                sendMessage(session, message);
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
-            }
-        }
+//        for (Session session : sessionPools.values()) {
+//            try {
+//                sendMessage(session, message);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                continue;
+//            }
+//        }
     }
 
     /**
@@ -97,7 +104,7 @@ public class WebSocketServer {
      */
     @OnError
     public void onError(Session session, Throwable throwable) {
-        log.info("webSocket 发生错误");
+        log.error("webSocket 发生错误");
         throwable.printStackTrace();
     }
 

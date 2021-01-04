@@ -2,8 +2,6 @@ package com.example.controlelec.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.controlelec.bean.DeviceBean;
-import com.example.controlelec.bean.OrderBean;
-import com.sun.deploy.uitoolkit.impl.fx.FXApplet2Adapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.controlelec.service.DeviceService;
 import org.springframework.web.client.RestTemplate;
 import com.example.controlelec.comm.ControlElecReason;
-
 import java.util.*;
 
 @RestController
@@ -153,4 +150,5 @@ public class MainController {
         }
         return mapRsp;
     }
+
 }

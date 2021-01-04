@@ -22,4 +22,9 @@ public class DeviceServiceImpl implements DeviceService {
     public List<DeviceBean> getDeviceList(String uuid) {
         return deviceMapper.getDeviceList(uuid);
     }
+
+    @Override
+    public DeviceBean getDeviceInfo(String stakeNo) {
+        return deviceMapper.getDeviceInfo(stakeNo);
+    }
 }
