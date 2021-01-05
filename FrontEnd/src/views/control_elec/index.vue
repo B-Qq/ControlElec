@@ -249,8 +249,19 @@ export default {
     })
   },
   mounted() {
+    // 定时器
     const timer = setInterval(() => {
       this.ws.send('heart')
+      this.getSignal()
+      this.getElec()
+      this.getMeter()
+      if (this.work_state === '3 (工作中)') {
+        this.orderColor = 'color:red;'
+      } else if (this.work_state === '1 (故障)') {
+        this.orderColor = 'color:orange;'
+      } else {
+        this.orderColor = 'color:green;'
+      }
     }, 5000)
     this.$once('hook:beforeDestroy', () => {
       clearInterval(timer)
@@ -333,7 +344,7 @@ export default {
           startElec(this.form.stakeNo, this.form.port).then((res) => {
             console.log('下供电:', this.form.stakeNo, ', ', this.form.port, ' ', res.data)
             if (res.data['status'] === '1') {
-              this.orderColor = 'color:red;'
+              // this.orderColor = 'color:red;'
               this.orderIdp = res.data['orderId']
               this.$alert(res.data['msg'], '用电结果', {
                 confirmButtonText: '确定',
@@ -379,7 +390,7 @@ export default {
           this.loadingStopBtn = false
           console.log('1111', res.data)
           if (res.data['status'] === '1') {
-            this.orderColor = 'color:green;'
+            // this.orderColor = 'color:green;'
             this.$alert('停止用电成功', '停止用电结果', {
               confirmButtonText: '确定',
               type: 'success'

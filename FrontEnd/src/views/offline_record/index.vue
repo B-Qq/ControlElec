@@ -11,7 +11,16 @@
   <hr/>
   <div class="cantainer">
     <div class="block">
-      <span class="demonstration">日期:</span>
+      <span>桩号:</span>
+      <el-select v-model="stakeNo" placeholder="请选择">
+        <el-option
+          v-for="item in stakeNoOptions"
+          :key="item.stakeNo"
+          :label="item.label"
+          :value="item.stakeNo">
+        </el-option>
+      </el-select>
+      <span style="padding-left: 10px">日期:</span>
       <el-date-picker
         v-model="selectDate"
         type="date"
@@ -19,7 +28,17 @@
         value-format="yyyy-MM-dd"
       >
       </el-date-picker>
+      <span style="padding-left: 10px">告警:</span>
+        <el-select v-model="warn" placeholder="请选择">
+          <el-option
+            v-for="item in warnOptions"
+            :key="item.warn"
+            :label="item.label"
+            :value="item.warn">
+          </el-option>
+        </el-select>
       <el-button type="success" :loading="SearchBtn" @click="SearchWarn" style="margin-left: 10px;">搜索</el-button>
+      <el-button type="info" @click="resetSearch" style="margin-left: 10px;">重置</el-button>
     </div>
     <el-table style="width: 100%;margin-bottom: 15px" :data="WarnList.slice((currentPage-1)*pagesize,currentPage*pagesize)" align="center">
       <el-table-column type="index" width="50" align="center">
@@ -49,12 +68,22 @@
 </template>
 
 <script>
-import { getOnlineWarn, getWsPath } from '@/apis/control-elec'
+import { getOnlineWarn, getWsPath, getDeviceList } from '@/apis/control-elec'
 export default {
   created() {
     this.selectDate = this.getDate()
     this.handleUserList()
     this.initWebSocket()
+    getDeviceList(sessionStorage.getItem('uuid')).then((res) => {
+      // 遍历设备信息数组
+      res.data['stakes'].filter((item, i) => {
+        this.stakeNoOptions.push({
+          stakeNo: res.data['stakes'][i]['stakeNo'],
+          label: res.data['stakes'][i]['stakeName']
+        })
+        return item > res.data['stakes'].length
+      })
+    })
   },
   mounted() {
     const timer = setInterval(() => {
@@ -66,12 +95,26 @@ export default {
   },
   data() {
     return {
+      SearchBtn: false,
+      stakeNoOptions: [{stakeNo: '', label: '全部'}],
+      warnOptions: [{
+        warn: '',
+        label: '全部'
+      }, {
+        warn: '1',
+        label: '告警产生'
+      }, {
+        warn: '0',
+        label: '告警恢复'
+      }],
       user: sessionStorage.getItem('user'),
       currentPage: 1, // 初始页
       pagesize: 10, // 每页的数据
       WarnList: [],
       selectDate: '',
-      ws: {}
+      ws: {},
+      warn: '',
+      stakeNo: ''
     }
   },
   methods: {
@@ -92,10 +135,15 @@ export default {
       if (uuid === 'bcb73132-3b71-11eb-ab4e-000c29a9186e') {
         uuid = null
       }
+      this.SearchBtn = true
       getOnlineWarn(uuid, this.selectDate).then((res) => {
         this.WarnList = res.data
+        this.SearchBtn = false
         console.log(this.WarnList)
       })
+        .catch(() => {
+          this.SearchBtn = false
+        })
     },
     statusFormat(row, column) {
       if (row.status === '1') {
@@ -116,8 +164,13 @@ export default {
       return aData.getFullYear() + '-' + (aData.getMonth() + 1) + '-' + aData.getDate()
     },
     SearchWarn() {
-      console.log('date:', this.selectDate)
+      console.log('date:', this.selectDate, 'warn:', this.warn, 'stakeNo:', this.stakeNo)
       this.handleUserList()
+    },
+    resetSearch() {
+      this.stakeNo = ''
+      this.warn = ''
+      this.selectDate = this.getDate()
     },
     initWebSocket() {
       if (typeof (WebSocket) === 'undefined') {
@@ -175,13 +228,15 @@ export default {
 .cantainer {
   width: auto;
   margin: auto, auto;
-  padding: 50px;
+  padding-bottom: 50px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
 }
 
 .block {
   text-align: center;
   margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  padding: 20px;
 }
 
 </style>
