@@ -8,4 +8,28 @@
         FROM CHARGING_ELEC_ORDER WHERE ORDER_STATUS = 2 AND STAKE_NO = #{stakeNo} AND CHARGE_PORT = #{port} ORDER BY START_TIME DESC LIMIT 1
     </select>
 
+    <select id="getOrders" parameterType="String" resultType="com.example.controlelec.bean.OrderRecordBean">
+        SELECT
+        ceo.ORDER_ID orderId,
+        SADA.stake_name stakeName,
+        ceo.CHARGE_PORT chargePort,
+        ceo.CREATE_TIME createTime,
+        ceo.START_TIME startTime,
+        ceo.END_TIME endTime,
+        ceo.ORDER_STATUS orderStatus,
+        ceo.STOP_ELEC_REASON stopElecReason
+        FROM charging_elec_order ceo RIGHT JOIN (SELECT SAD.STAKE_NAME ,SAD.STAKE_NO FROM SZ_ASSET_DEVICE SAD WHERE 1 = 1
+        <if test="uuid != null and uuid != ''">
+            and SAD.USER_UUID = #{uuid}
+        </if>
+        <if test="stakeNo != null and stakeNo != ''">
+            and SAD.STAKE_NO = #{stakeNo}
+        </if>
+        ) AS SADA ON ceo.STAKE_NO = SADA.STAKE_NO where ceo.STAKE_NO is not null and ceo.createTime >= #{date}
+        <if test="orderId != null and orderId != ''">
+            and ceo.order_id = #{orderId}
+        </if>
+        order by ceo.CREATE_TIME desc
+    </select>
+
 </mapper>

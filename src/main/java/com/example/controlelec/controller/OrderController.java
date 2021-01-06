@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.controlelec.service.OrderService;
 import com.example.controlelec.bean.OrderBean;
+import com.example.controlelec.bean.OrderRecordBean;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,5 +33,10 @@ public class OrderController {
             mapRsp.put("orderId", "");
         }
         return mapRsp;
+    }
+
+    @RequestMapping(path = "/getOrders", method = RequestMethod.POST)
+    public List<OrderRecordBean> getOrders(String uuid, String date, String stakeNo, String orderId) {
+        return orderService.getOrders(uuid, date, stakeNo, orderId);
     }
 }

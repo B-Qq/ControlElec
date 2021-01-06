@@ -21,14 +21,14 @@ public class MainController {
     private final Logger logger = LoggerFactory.getLogger(MainController.class);
     private final String SUCCESS = "1";
     private final String FAIL = "0";
-    private final String ROOT_UUID = "bcb73132-3b71-11eb-ab4e-000c29a9186e";
     @Autowired
     DeviceService deviceService;
 
     @RequestMapping(path = "/getDeviceList", method = RequestMethod.POST)
     public Map<String, List<DeviceBean>> getDeviceList(String uuid) {
         List<DeviceBean> deviceBeanList;
-        if (ROOT_UUID.equals(uuid)) {
+        String rOOTUUID = "bcb73132-3b71-11eb-ab4e-000c29a9186e";
+        if (rOOTUUID.equals(uuid)) {
             deviceBeanList = deviceService.getAllDeviceList();
         } else {
             deviceBeanList = deviceService.getDeviceList(uuid);
@@ -62,11 +62,11 @@ public class MainController {
         mapForm.add("chargePort", port);
         mapForm.add("provinceId", "2001");
         mapForm.add("cityId", "1001");
-        mapForm.add("stationId", "33050000001");
+        mapForm.add("stationId", "33050000005");
         mapForm.add("ct", "100/5");
         mapForm.add("pt", "1");
         mapForm.add("ratedPower", "500");
-        mapForm.add("boatName", "阿萨大1231231234");
+        mapForm.add("boatName", "测试账号");
         mapForm.add("token", "c:app:5C0D464F470E41D39A5A710D78761AEF1");
         mapForm.add("userId", "139010");
         mapForm.add("dateNode", "2018-12-25");

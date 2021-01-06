@@ -1,12 +1,15 @@
 <template>
   <div class="main">
     <el-row>
-    <el-col :span="20">
+    <el-col :span="18">
     <p>用户: {{user}}</p>
     </el-col>
     <el-col :span="2">
-       <el-button @click="offlineRecord()" type="success" round>设备离线记录</el-button>
+       <el-button @click="orderRecord()" type="warning" round>订单记录</el-button>
     </el-col>
+      <el-col :span="2">
+        <el-button @click="offlineRecord()" type="success" round>设备离线记录</el-button>
+      </el-col>
     <el-col :span="2">
       <el-button class="logout-button" @click="logout()" type="primary">退出登录</el-button>
     </el-col>
@@ -422,6 +425,10 @@ export default {
     },
     offlineRecord() {
       this.$router.push('/offline')
+      this.ws.close()
+    },
+    orderRecord() {
+      this.$router.push('/order')
       this.ws.close()
     },
     getDeviceMsg() {

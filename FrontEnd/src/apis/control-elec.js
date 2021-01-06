@@ -121,6 +121,20 @@ export function getOnlineWarn(uuid, date, stakeNo, warn) {
 }
 
 export function getWsPath() {
-  return 'ws://127.0.0.1:9002/websocket/' + sessionStorage.getItem('uuid')
-  // return 'ws://203.93.121.134:18882/websocket/' + sessionStorage.getItem('uuid')
+  // return 'ws://127.0.0.1:9002/websocket/' + sessionStorage.getItem('uuid')
+  return 'ws://203.93.121.134:18882/websocket/' + sessionStorage.getItem('uuid')
+}
+
+// 获取设备订单记录
+export function getOrders(uuid, date, stakeNo, orderId) {
+  return request({
+    url: '/getOrders',
+    method: 'post',
+    data: {
+      uuid,
+      date,
+      stakeNo,
+      orderId
+    }
+  })
 }

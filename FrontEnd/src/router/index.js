@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/views/login'
 import Main from '@/views/control_elec'
 import Offline from '@/views/offline_record'
+import Order from '@/views/order_record'
 import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 
@@ -30,6 +31,11 @@ const route = new Router({
       path: '/offline',
       name: 'offline',
       component: Offline
+    },
+    {
+      path: '/order',
+      name: 'order',
+      component: Order
     }
   ],
   mode: 'history'

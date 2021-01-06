@@ -11,7 +11,9 @@
   <hr/>
   <div class="cantainer">
     <div class="block">
-      <span>桩号:</span>
+      <span style="padding-left: 10px">订单编号:</span>
+      <el-input style="width: 300px" v-model="orderId" placeholder="请输入订单号"></el-input>
+      <span style="padding-left: 10px">桩号:</span>
       <el-select v-model="stakeNo" placeholder="请选择">
         <el-option
           v-for="item in stakeNoOptions"
@@ -28,31 +30,19 @@
         value-format="yyyy-MM-dd"
       >
       </el-date-picker>
-      <span style="padding-left: 10px">告警:</span>
-        <el-select v-model="warn" placeholder="请选择">
-          <el-option
-            v-for="item in warnOptions"
-            :key="item.warn"
-            :label="item.label"
-            :value="item.warn">
-          </el-option>
-        </el-select>
-      <el-button type="success" :loading="SearchBtn" @click="SearchWarn" style="margin-left: 10px;">搜索</el-button>
+      <el-button type="success" :loading="SearchBtn" @click="SearchOrders" style="margin-left: 10px;">搜索</el-button>
       <el-button type="info" @click="resetSearch" style="margin-left: 10px;">重置</el-button>
     </div>
-    <el-table style="width: 100%;margin-bottom: 15px" :data="WarnList.slice((currentPage-1)*pagesize,currentPage*pagesize)" align="center">
-      <el-table-column type="index" width="50" align="center">
-      </el-table-column>
-      <el-table-column label="设备编号" prop="stakeName" width="140" align="center">
-      </el-table-column>
-      <el-table-column label="端口号" prop="port" width="140" align="center">
-      </el-table-column>
-      <el-table-column label="告警状态" prop="status" width="140" :formatter="statusFormat" align="center">
-      </el-table-column>
-      <el-table-column label="告警开始时间" prop="warnStartTime" width="200" align="center">
-      </el-table-column>
-      <el-table-column label="告警结束时间" prop="warnEndTime" width="200" :formatter="warnEndTimeFormat" align="center">
-      </el-table-column>
+    <el-table style="width: 100%;margin-bottom: 15px" :data="OrderList.slice((currentPage-1)*pagesize,currentPage*pagesize)" align="center">
+      <el-table-column type="index" width="50" align="center"></el-table-column>
+      <el-table-column label="订单编号" prop="orderId" width="280" align="center"></el-table-column>
+      <el-table-column label="设备编号" prop="stakeName" width="150" align="center"></el-table-column>
+      <el-table-column label="端口号" prop="chargePort" width="130" align="center"></el-table-column>
+      <el-table-column label="下单时间" prop="createTime" width="180" align="center"></el-table-column>
+      <el-table-column label="开始时间" prop="startTime" width="180" :formatter="startTimeformat" align="center"></el-table-column>
+      <el-table-column label="结束时间" prop="endTime" width="180" :formatter="endTimeformat" align="center"></el-table-column>
+      <el-table-column label="订单状态" prop="orderStatus" width="130" :formatter="orderStatusformat" align="center"></el-table-column>
+      <el-table-column label="停电原因" prop="stopElecReason" width="150" :formatter="stopElecReasonformat" align="center"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="handleSizeChange"
@@ -61,14 +51,14 @@
       :page-sizes="[5, 10, 20, 40]"
       :page-size="pagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="WarnList.length" align="center">
+      :total="OrderList.length" align="center">
     </el-pagination>
   </div>
   </div>
 </template>
 
 <script>
-import { getOnlineWarn, getWsPath, getDeviceList } from '@/apis/control-elec'
+import { getOrders, getWsPath, getDeviceList } from '@/apis/control-elec'
 export default {
   created() {
     this.selectDate = this.getDate()
@@ -97,20 +87,11 @@ export default {
     return {
       SearchBtn: false,
       stakeNoOptions: [{stakeNo: '', label: '全部'}],
-      warnOptions: [{
-        warn: '',
-        label: '全部'
-      }, {
-        warn: '0',
-        label: '告警产生'
-      }, {
-        warn: '1',
-        label: '告警恢复'
-      }],
+      orderId: '',
       user: sessionStorage.getItem('user'),
       currentPage: 1, // 初始页
       pagesize: 10, // 每页的数据
-      WarnList: [],
+      OrderList: [],
       selectDate: '',
       ws: {},
       warn: '',
@@ -136,40 +117,58 @@ export default {
         uuid = null
       }
       this.SearchBtn = true
-      getOnlineWarn(uuid, this.selectDate, this.stakeNo, this.warn).then((res) => {
-        this.WarnList = res.data
+      getOrders(uuid, this.selectDate, this.stakeNo, this.orderId).then((res) => {
+        this.OrderList = res.data
         this.SearchBtn = false
-        console.log(this.WarnList)
+        console.log(this.OrderList)
       })
         .catch(() => {
           this.SearchBtn = false
         })
     },
-    statusFormat(row, column) {
-      if (row.status === '1') {
-        return '告警恢复'
-      } else {
-        return '告警产生'
-      }
-    },
-    warnEndTimeFormat(row, column) {
-      if (row.warnEndTime === null) {
+    startTimeformat(row, column) {
+      if (row.startTime === null) {
         return '-'
       } else {
-        return row.warnEndTime
+        return row.startTime
+      }
+    },
+    endTimeformat(row, column) {
+      if (row.endTime === null) {
+        return '-'
+      } else {
+        return row.endTime
+      }
+    },
+    orderStatusformat(row, column) {
+      if (row.orderStatus === '1') {
+        return '开始'
+      } else if (row.orderStatus === '2') {
+        return '供电中'
+      } else if (row.orderStatus === '3') {
+        return '结束'
+      } else {
+        return '-'
+      }
+    },
+    stopElecReasonformat(row, column) {
+      if (row.stopElecReason === null) {
+        return '-'
+      } else {
+        return row.stopElecReason
       }
     },
     getDate() {
       var aData = new Date()
       return aData.getFullYear() + '-' + (aData.getMonth() + 1) + '-' + aData.getDate()
     },
-    SearchWarn() {
-      console.log('date:', this.selectDate, 'warn:', this.warn, 'stakeNo:', this.stakeNo)
+    SearchOrders() {
+      console.log('date:', this.selectDate, 'orderId:', this.orderId, 'stakeNo:', this.stakeNo)
       this.handleUserList()
     },
     resetSearch() {
       this.stakeNo = ''
-      this.warn = ''
+      this.orderId = ''
       this.selectDate = this.getDate()
     },
     initWebSocket() {
