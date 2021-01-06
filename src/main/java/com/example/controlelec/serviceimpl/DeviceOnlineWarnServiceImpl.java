@@ -15,8 +15,8 @@ public class DeviceOnlineWarnServiceImpl implements DeviceOnlineWarnService {
     private DeviceOnlineWarnMapper deviceOnlineWarnMapper;
 
     @Override
-    public List<DeviceOnlineWarnBean> getOnlineWarn(String uuid, String date) {
-        List<DeviceOnlineWarnBean> deviceOnlineWarnBeanList = deviceOnlineWarnMapper.getOnlineWarn(uuid, date);
+    public List<DeviceOnlineWarnBean> getOnlineWarn(String uuid, String date, String stakeNo, String warn) {
+        List<DeviceOnlineWarnBean> deviceOnlineWarnBeanList = deviceOnlineWarnMapper.getOnlineWarn(uuid, date, stakeNo, warn);
         return deviceOnlineWarnBeanList;
     }
 }

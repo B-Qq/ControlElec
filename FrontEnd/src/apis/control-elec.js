@@ -107,18 +107,20 @@ export function queryCertifyStatus(stakeNo, port) {
 }
 
 // 获取设备在线告警
-export function getOnlineWarn(uuid, date) {
+export function getOnlineWarn(uuid, date, stakeNo, warn) {
   return request({
     url: '/getOnlineWarn',
     method: 'post',
     data: {
       uuid,
-      date
+      date,
+      stakeNo,
+      warn
     }
   })
 }
 
 export function getWsPath() {
-  // return 'ws://127.0.0.1:9002/websocket/' + sessionStorage.getItem('uuid')
-  return 'ws://203.93.121.134:18882/websocket/' + sessionStorage.getItem('uuid')
+  return 'ws://127.0.0.1:9002/websocket/' + sessionStorage.getItem('uuid')
+  // return 'ws://203.93.121.134:18882/websocket/' + sessionStorage.getItem('uuid')
 }

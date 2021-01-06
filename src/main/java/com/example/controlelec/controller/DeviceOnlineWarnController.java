@@ -16,7 +16,7 @@ public class DeviceOnlineWarnController {
 
     @RequestMapping(path = "/getOnlineWarn", method = RequestMethod.POST)
     public List<DeviceOnlineWarnBean> getOnlineWarn(String uuid, String date, String stakeNo, String warn){
-       List<DeviceOnlineWarnBean> deviceOnlineWarnBeanList = deviceOnlineWarnService.getOnlineWarn(uuid, date);
+       List<DeviceOnlineWarnBean> deviceOnlineWarnBeanList = deviceOnlineWarnService.getOnlineWarn(uuid, date, stakeNo, warn);
        return deviceOnlineWarnBeanList;
     }
 }

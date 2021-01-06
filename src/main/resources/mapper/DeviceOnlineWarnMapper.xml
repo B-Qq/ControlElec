@@ -12,6 +12,13 @@
     <if test="uuid != null and uuid != ''">
         and SAD.USER_UUID = #{uuid}
     </if>
-    ) AS SADA ON EOW.DEVICE_ID = SADA.STAKE_NO WHERE EOW.WARN_START_TIME >= #{date} AND EOW.DEVICE_ID IS NOT NULL ORDER BY EOW.WARN_START_TIME DESC
+    <if test="stakeNo != null and stakeNo != ''">
+        and SAD.STAKE_NO = #{stakeNo}
+    </if>
+    ) AS SADA ON EOW.DEVICE_ID = SADA.STAKE_NO WHERE EOW.WARN_START_TIME >= #{date}
+    <if test="warn != null and warn != ''">
+        and EOW.STATUS = #{warn}
+    </if>
+    AND EOW.DEVICE_ID IS NOT NULL ORDER BY EOW.WARN_START_TIME DESC
     </select>
 </mapper>

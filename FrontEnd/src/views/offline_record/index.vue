@@ -101,10 +101,10 @@ export default {
         warn: '',
         label: '全部'
       }, {
-        warn: '1',
+        warn: '0',
         label: '告警产生'
       }, {
-        warn: '0',
+        warn: '1',
         label: '告警恢复'
       }],
       user: sessionStorage.getItem('user'),
@@ -136,7 +136,7 @@ export default {
         uuid = null
       }
       this.SearchBtn = true
-      getOnlineWarn(uuid, this.selectDate).then((res) => {
+      getOnlineWarn(uuid, this.selectDate, this.stakeNo, this.warn).then((res) => {
         this.WarnList = res.data
         this.SearchBtn = false
         console.log(this.WarnList)
@@ -221,7 +221,6 @@ export default {
   padding: 20px;
   background-color: rgb(255, 255, 255, 0.8); /* 透明背景色 */
   border-radius: 0px; /* 圆角 */
-  /* box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); */
   margin-top: 5px;
 }
 
