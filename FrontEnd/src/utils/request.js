@@ -5,7 +5,7 @@ import qs from 'qs'
 
 const service = axios.create({
   // baseURL: 'http://127.0.0.1:9002',
-  baseURL: 'http://203.93.121.134:18882',
+  baseURL: 'http://49.7.60.22:18882',
   timeout: 65000,
   headers: {'Content-Type': 'application/x-www-form-urlencoded'},
   transformRequest: [function (data) {

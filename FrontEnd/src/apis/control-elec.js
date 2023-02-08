@@ -122,7 +122,7 @@ export function getOnlineWarn(uuid, date, stakeNo, warn) {
 
 export function getWsPath() {
   // return 'ws://127.0.0.1:9002/websocket/' + sessionStorage.getItem('uuid')
-  return 'ws://203.93.121.134:18882/websocket/' + sessionStorage.getItem('uuid')
+  return 'ws://49.7.60.22:18882/websocket/' + sessionStorage.getItem('uuid')
 }
 
 // 获取设备订单记录
