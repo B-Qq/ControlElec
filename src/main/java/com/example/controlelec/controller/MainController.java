@@ -2,6 +2,7 @@ package com.example.controlelec.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.controlelec.bean.DeviceBean;
+import com.example.controlelec.comm.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +71,8 @@ public class MainController {
         mapForm.add("token", "c:app:5C0D464F470E41D39A5A710D78761AEF1");
         mapForm.add("userId", "139010");
         mapForm.add("dateNode", "2018-12-25");
-
-        JSONObject result = restTemplate.postForObject("http://192.168.102.118:8080/hsf/adcloud/interface/notStationBeginsToSmallStake", mapForm, JSONObject.class);
+        String serverAddress = "http://192.168.102.118:8080/hsf/adcloud/interface/notStationBeginsToSmallStake";
+        JSONObject result = restTemplate.postForObject(serverAddress, mapForm, JSONObject.class);
         if (result != null) {
             logger.info("供电返回结果:" + result.toJSONString());
             JSONObject dataObj = result.getJSONObject("data");
@@ -105,7 +106,8 @@ public class MainController {
         mapForm.add("dateNode", "20180812");
         mapForm.add("orderId", orderId);
         logger.info("订单:" + orderId + " 下停电指令");
-        JSONObject result = restTemplate.postForObject("http://192.168.102.118:8080/hsf/adcloud/interface/notStationEndToSmallStake", mapForm, JSONObject.class);
+        String serverAddress = "http://192.168.102.118:8080/hsf/adcloud/interface/notStationEndToSmallStake";
+        JSONObject result = restTemplate.postForObject(serverAddress , mapForm, JSONObject.class);
         if (result != null) {
             logger.info("断电返回结果:" + result.toJSONString());
             JSONObject dataObj = result.getJSONObject("data");
@@ -136,7 +138,8 @@ public class MainController {
         mapForm.add("stakeNo", stakeNo);
         mapForm.add("chargePort", port);
         logger.info("获取设备:" + stakeNo + ":" + port + " 认证状态");
-        JSONObject result = restTemplate.postForObject("http://192.168.102.119:8080/debugStake/queryCertifyStatus", mapForm, JSONObject.class);
+        String serverAddress = Config.getConstant("ServerAddress").trim() + "/debugStake/queryCertifyStatus";
+        JSONObject result = restTemplate.postForObject(serverAddress, mapForm, JSONObject.class);
         if (result != null) {
             logger.info("设备" + stakeNo  + ":" + port + " 认证结果:" + result.toJSONString());
             JSONObject dataObj = result.getJSONObject("data");
